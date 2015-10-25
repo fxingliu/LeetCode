@@ -1,25 +1,17 @@
 class Solution {
 public:
     void reverseWords(string &s) {
-        stack<char> word;
-        stack<char> sentence;
-        
-        for (int i=0; i<=s.size(); i++) {
-            if (isspace(s[i]) || i==s.size()) {
-                if (!sentence.empty() && !word.empty()) 
-                    sentence.push(' ');
-                while (!word.empty()) {
-                    sentence.push(word.top());
-                    word.pop();
-                }
-            }
-            else
-                word.push(s[i]);
-        }
+        string copy_s(s);
         s.clear();
-        while (!sentence.empty()) {
-            s.push_back(sentence.top());
-            sentence.pop();
+        int i = copy_s.size(), j = i;
+        while (--i >= 0) {
+            if (isspace(copy_s[i]))
+                j = i;
+            else if (i==0 || isspace(copy_s[i-1])) {
+                if (s.size()!=0)
+                    s.push_back(' ');
+                s.append(copy_s, i, j-i);
+            }
         }
     }
 };
