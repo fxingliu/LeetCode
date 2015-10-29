@@ -1,33 +1,31 @@
 class Solution {
 public:
     int strStr(string haystack, string needle) {
-        if (needle.size() == 0) return 0;
+        if (needle.empty()) return 0;
+        if (haystack.empty()) return -1;
         vector<int> next = cal_next(needle);
-        int i, j=-1;
-        for (i=0; i<haystack.size(); i++) {
-            while (j>-1 && needle[j+1]!=haystack[i])
+        int j=-1;
+        for (int i=0; i<haystack.size(); i++) {
+            while (j>-1 && haystack[i]!=needle[j+1])
                 j = next[j];
-            if (needle[j+1] == haystack[i])
+            if (haystack[i] == needle[j+1])
                 j++;
             if (j == needle.size()-1) // match
                 return i-j;
-            j = next[j];
         }
         return -1;
     }
     
 private:
     // calculate next[]
-    vector<int> cal_next(string needle) {
-        vector<int> next;
+    vector<int> cal_next(string s) {
+        vector<int> next(s.size(), -1);
         int j = -1;
-        // initialize next[0] = -1
-        next.push_back(j);
-        for (int i=1; i<needle.size(); i++) {
-            while (j>-1 && needle[j+1]!=needle[i]) 
+        for (int i=1; i<s.size(); i++) {
+            while (j>-1 && s[i]!=s[j+1]) 
                 j = next[j];
-            if (needle[j+1] == needle[i]) j++;
-            next.push_back(j);
+            if (s[i] == s[j+1]) j++;
+            next[i] = j;
         }
         return next;
     }
