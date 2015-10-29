@@ -10,18 +10,18 @@
 class Solution {
 public:
     TreeNode* invertTree(TreeNode* root) {
-        if (!root) return root;
-        queue<TreeNode*> q;
-        q.push(root);
-        while (!q.empty()) {
-            TreeNode *cur = q.front();
-            q.pop();
-            if (cur->left) q.push(cur->left);
-            if (cur->right) q.push(cur->right);
-            TreeNode *tmp = cur->left;
-            cur->left = cur->right;
-            cur->right = tmp;
-        }
+        invertNode(root);
         return root;
+    }
+    
+private:
+    void invertNode(TreeNode *p) {
+        if (!p) return;
+        TreeNode *tmp = p->left;
+        p->left = p->right;
+        p->right = tmp;
+        
+        invertNode(p->left);
+        invertNode(p->right);
     }
 };
