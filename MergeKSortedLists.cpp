@@ -9,32 +9,29 @@
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        if (lists.size() == 0) return NULL;
-        int end=lists.size()-1;
-        while (end > 0) {
-            int begin=0;
-            while (begin < end)
-                lists[begin] = merge2Lists(lists[begin++], lists[end--]);
+        if (lists.empty()) return NULL;
+        priority_queue<ListNode*, vector<ListNode*>, compare> heap;
+        for (int i=0; i<lists.size(); i++) 
+            if (lists[i]) 
+                heap.push(lists[i]);
+        ListNode dummy(0);
+        ListNode *t = &dummy;
+        while (!heap.empty()) {
+            t->next = heap.top();
+            heap.pop();
+            t = t->next;
+            if (t->next) 
+                heap.push(t->next);
         }
-        return lists[0];
+        t->next = NULL;
+        return dummy.next;
+        
     }
     
 private:
-    ListNode* merge2Lists(ListNode *p, ListNode *q) {
-        ListNode dummy(0);
-        ListNode *t = &dummy;
-        while (p && q) {
-            if (p->val < q->val) {
-                t->next = p;
-                p = p->next;
-            }
-            else {
-                t->next = q;
-                q = q->next;
-            }
-            t = t->next;
+    struct compare {
+        bool operator()(const ListNode *p, const ListNode *q) const {
+            return p->val > q->val;
         }
-        t->next = p ? p : q;
-        return dummy.next;
-    }
+    };
 };
