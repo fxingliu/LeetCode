@@ -9,29 +9,32 @@
 class Solution {
 public:
     RandomListNode *copyRandomList(RandomListNode *head) {
-        RandomListNode dummy(0);
-        RandomListNode *t = head, *cur = &dummy;
-        unordered_map<RandomListNode*, RandomListNode*> m;
+        if (!head) return NULL;
+        
+        RandomListNode *t = head;
+        // insert the copy of each node after itself
         while (t) {
             RandomListNode *tmp = new RandomListNode(t->label);
-            cur->next = tmp;
-            m[t] = tmp;
-            t = t->next;
-            cur = cur->next;
+            tmp->next = t->next;
+            t->next = tmp;
+            t = tmp->next;
         }
         
-        t = head, cur = &dummy;
+        // assign the random pointer
+        t = head;
         while (t) {
             if (t->random)
-                cur->next->random = m[t->random];
-            else
-                // avoid implicit code
-                cur->next->random = NULL;
-            t = t->next;
-            cur = cur->next;
+                t->next->random = t->random->next;
+            t = t->next->next;
         }
         
-        return dummy.next;
-        
+        // return the list of copy
+        RandomListNode *newhead = head->next;
+        t = newhead;
+        while (t->next) {
+            t->next = t->next->next;
+            t = t->next;
+        }
+        return newhead;
     }
 };
