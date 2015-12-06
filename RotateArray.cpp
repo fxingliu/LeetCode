@@ -2,21 +2,20 @@ class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
         int len = nums.size();
-        if (len < 2 || k < 0) return;
-        k %= len;
-        // first reverse first n-k elements, then last k elements, finally all elements
-        reverse(nums, 0, len-k);
-        reverse(nums, len-k, k);
-        reverse(nums, 0, len);
-    }
-    
-private:
-    void reverse(vector<int>& arr, int start, int num) {
-        int tmp, end = start + num - 1;
-        while (start < end) {
-            tmp = arr[start];
-            arr[start++] = arr[end];
-            arr[end--] = tmp;
+        if (len < 2 || k <= 0) return;
+        int countRotated = 0, start = 0, cur = 0, tmp;
+        while (countRotated < len) {
+            do {
+                cur = (cur+k) % len;
+                tmp = nums[cur];
+                nums[cur] = nums[start];
+                nums[start] = tmp;
+                countRotated++;
+            }
+            while (start != cur);
+            // start a new cycle
+            start++;
+            cur = start;
         }
     }
 };
