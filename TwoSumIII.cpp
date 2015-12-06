@@ -1,26 +1,24 @@
 class TwoSum {
+private:
+    unordered_multiset<int> nums;
+    
 public:
 
     // Add the number to an internal data structure.
 	void add(int number) {
-	    map[number]++;
+	    nums.insert(number);
 	}
 
     // Find if there exists any pair of numbers which sum is equal to the value.
 	bool find(int value) {
-	    for (auto it : map) {
-	        if (it.first < value-it.first && map.find(value-it.first) != map.end())
-	            return true;
-	        // handle duplicate
-	        if (it.first*2 == value && it.second > 1)
+	    for (int i : nums) {
+	        // consider duplicate
+	        int count = (value-i == i) ? 1 : 0;
+	        if (nums.count(value-i) > count)
 	            return true;
 	    }
 	    return false;
 	}
-	
-private:
-    // value -> times of occurance
-    unordered_map<int, int> map;
 };
 
 
