@@ -1,10 +1,17 @@
 class Solution {
 public:
     bool isPalindrome(int x) {
-        int rev = 0;
-        for (int xx=x; xx>0; xx/=10)
-            rev = rev*10+xx%10;
-        if (rev == x) return true;
-        return false;
+        if (x < 0) return false;
+        int div = 1;
+        while (x/div >= 10) 
+            div *= 10;
+        while (x) {
+            int l = x/div;
+            int r = x%10;
+            if (l != r) return false;
+            x = (x % div) / 10;
+            div /= 100;
+        }
+        return true;
     }
 };
