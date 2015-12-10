@@ -14,7 +14,7 @@ public:
     }
     
 private:
-    TreeNode *convert(vector<int> arr, int start, int end) {
+    TreeNode *convert(vector<int>& arr, int start, int end) {
         if (start > end) return NULL;
         int mid = (start+end)/2;
         TreeNode *node = new TreeNode(arr[mid]);
