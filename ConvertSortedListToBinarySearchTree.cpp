@@ -25,20 +25,19 @@ public:
             p = p->next;
             len++;
         }
-        return convert(0, len-1);
+        return convert(len);
     }
     
 private:
     ListNode *list;
     
-    TreeNode* convert(int start, int end) {
-        if (start > end) return NULL;
-        int mid = (start + end) / 2; 
-        TreeNode *lchild = convert(start, mid-1);
+    TreeNode* convert(int len) {
+        if (len == 0) return NULL;
+        TreeNode *lchild = convert(len/2);
         TreeNode *cur = new TreeNode(list->val);
         cur->left = lchild;
         list = list->next;
-        cur->right = convert(mid+1, end);
+        cur->right = convert(len-len/2-1);
         return cur;
     }
 };
