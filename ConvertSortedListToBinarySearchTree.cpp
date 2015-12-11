@@ -18,29 +18,27 @@
 class Solution {
 public:
     TreeNode* sortedListToBST(ListNode* head) {
+        list = head;
         ListNode *p = head;
         int len = 0;
         while (p) {
             p = p->next;
             len++;
         }
-        return convert(head, len);
+        return convert(0, len-1);
     }
     
 private:
-    TreeNode* convert(ListNode *node, int len) {
-        if (len == 0 || !node) return NULL;
-        if (len == 1) return new TreeNode(node->val);
-        
-        ListNode *p = node;
-        int step = len/2;
-        while (step>0) {
-            p = p->next;
-            step--;
-        }
-        TreeNode *cur = new TreeNode(p->val);
-        cur->left = convert(node, len/2);
-        cur->right = convert(p->next, len-len/2-1);
+    ListNode *list;
+    
+    TreeNode* convert(int start, int end) {
+        if (start > end) return NULL;
+        int mid = (start + end) / 2; 
+        TreeNode *lchild = convert(start, mid-1);
+        TreeNode *cur = new TreeNode(list->val);
+        cur->left = lchild;
+        list = list->next;
+        cur->right = convert(mid+1, end);
         return cur;
     }
 };
