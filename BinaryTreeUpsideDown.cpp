@@ -10,15 +10,25 @@
 class Solution {
 public:
     TreeNode* upsideDownBinaryTree(TreeNode* root) {
-        TreeNode *cur = root, *parent = NULL, *parentLeft = NULL;
-        while (cur) {
-            TreeNode *next = cur->left;
-            cur->left = parentLeft;
-            parentLeft = cur->right;
-            cur->right = parent;
-            parent = cur;
-            cur = next;
-        }
-        return parent;
+        if (!root) return NULL;
+        newroot = NULL;
+        TreeNode *rightmost = convertHelper(root);
+        rightmost->left = NULL;
+        rightmost->right = NULL;
+        return newroot;
     }
+    
+private: 
+    TreeNode* convertHelper(TreeNode *node) {
+        if (!node->left) {
+            newroot = node;
+            return node;
+        }
+        TreeNode *cur = convertHelper(node->left);
+        cur->left = node->right;
+        cur->right = node;
+        return node;
+    }
+    
+    TreeNode *newroot;
 };
