@@ -10,20 +10,37 @@
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        return buildNode(preorder, inorder, 0, preorder.size(), 0, preorder.size());
-    }
-    
-private:
-    // assume pe-ps == ie-is
-    TreeNode* buildNode(vector<int>& preorder, vector<int>& inorder, int ps, int pe, int is, int ie) {
-        if (ps == pe) return NULL;
-        TreeNode *cur = new TreeNode(preorder[ps]);
-        // locate cur in inorder
-        int pos;
-        for (pos=is; pos<ie; pos++) 
-            if (inorder[pos] == preorder[ps]) break;
-        cur->left = buildNode(preorder, inorder, ps+1, ps+1+pos-is, is, pos);
-        cur->right = buildNode(preorder, inorder, ps+1+pos-is, pe, pos+1, ie);
-        return cur;
+        if (preorder.empty()) return NULL;
+        
+        stack<TreeNode*> s;
+        int prepos = 0, inpos = 0;
+        bool insertLeft = true;
+        TreeNode *root = new TreeNode(preorder[0]);
+        s.push(root);
+        prepos++;
+        TreeNode *cur = root;
+        
+        while (prepos < preorder.size()) {
+            if (!s.empty() && s.top()->val == inorder[inpos]) {
+                cur = s.top();
+                s.pop();
+                inpos++;
+                insertLeft = false;
+            }
+            else {
+                TreeNode *next = new TreeNode(preorder[prepos]);
+                if (insertLeft) 
+                    cur->left = next;
+                else {
+                    cur->right = next;
+                    insertLeft = true;
+                }
+                s.push(next);
+                prepos++;
+                cur = next;
+            }
+        }
+        
+        return root;
     }
 };
