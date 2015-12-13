@@ -7,34 +7,33 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+struct NodeWrapper {
+    TreeNode *node;
+    int visited;
+    NodeWrapper(TreeNode *p) : node(p), visited(0) {}
+};
+
 class Solution {
 public:
     vector<int> postorderTraversal(TreeNode* root) {
-        TreeNode *cur = root, *prev = NULL;
-        stack<TreeNode*> s;
         vector<int> ret;
-        do {
-            while (cur) {
-                s.push(cur);
-                cur = cur->left;
+        if (!root) return ret;
+        stack<NodeWrapper> s;
+        NodeWrapper p(root);
+        s.push(p);
+        
+        while (!s.empty()) {
+            p = s.top();
+            s.pop();
+            if (++p.visited == 3) {
+                ret.push_back(p.node->val);
+                continue;
             }
-            prev = NULL;
-            while (!s.empty()) {
-                cur = s.top();
-                s.pop();
-                // just visited right child
-                if (prev == cur->right) {
-                    ret.push_back(cur->val);
-                    prev = cur;
-                }
-                else {
-                    s.push(cur);
-                    cur = cur->right;
-                    break;
-                }
-                
-            }
-        } while (!s.empty());
+            s.push(p);
+            if (p.visited == 1 && p.node->left) s.push(NodeWrapper(p.node->left));
+            if (p.visited == 2 && p.node->right) s.push(NodeWrapper(p.node->right));
+        }
+        
         return ret;
     }
 };
