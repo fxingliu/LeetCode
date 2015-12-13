@@ -10,20 +10,34 @@
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-        return buildNode(inorder, postorder, 0, inorder.size(), 0, postorder.size());
-    }
-    
-private:
-    // assume ie-is == pe-ps
-    TreeNode* buildNode(vector<int>& inorder, vector<int>& postorder, int is, int ie, int ps, int pe) {
-        if (is == ie) return NULL;
-        TreeNode *cur = new TreeNode(postorder[pe-1]);
-        // find current value in inorder
-        int pos;
-        for (pos=is; pos<ie; pos++)
-            if (inorder[pos] == cur->val) break;
-        cur->left = buildNode(inorder, postorder, is, pos, ps, ps-is+pos);
-        cur->right = buildNode(inorder, postorder, pos+1, ie, ps-is+pos, pe-1);
-        return cur;
+        if (inorder.empty()) return NULL;
+        
+        stack<TreeNode*> s;
+        int inpos = inorder.size()-1, postpos = postorder.size()-1;
+        TreeNode *root = new TreeNode(postorder[postpos--]);
+        s.push(root);
+        TreeNode *cur = root;
+        bool insertRight = true;
+        
+        while (postpos >= 0) {
+            if (!s.empty() && s.top()->val == inorder[inpos]) {
+                cur = s.top();
+                s.pop();
+                inpos--;
+                insertRight = false;
+            }
+            else {
+                TreeNode *next = new TreeNode(postorder[postpos--]);
+                if (insertRight)
+                    cur->right = next;
+                else {
+                    cur->left = next;
+                    insertRight = true;
+                }
+                s.push(next);
+                cur = next;
+            }
+        }
+        return root;
     }
 };
