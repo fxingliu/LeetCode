@@ -10,19 +10,31 @@
 class Solution {
 public:
     vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
-        travel(root, 0, true);
+        vector<vector<int>> ret;
+        if (!root) return ret;
+        queue<TreeNode*> q;
+        q.push(root);
+        q.push(NULL);
+        ret.push_back(vector<int>());
+        bool L2R = true;
+        
+        while (!q.empty()) {
+            TreeNode *p = q.front();
+            q.pop();
+            if (!p) {
+                L2R = !L2R;
+                if (!q.empty()) {
+                    ret.push_back(vector<int>());
+                    q.push(NULL);
+                }
+                continue;
+            }
+            if (L2R) ret.back().push_back(p->val);
+            else ret.back().insert(ret.back().begin(), p->val);
+            if (p->left) q.push(p->left);
+            if (p->right) q.push(p->right);
+        }
+        
         return ret;
-    }
-
-private: 
-    vector<vector<int>> ret;
-    
-    void travel(TreeNode *node, int level, bool L2R) {
-        if (!node) return;
-        if (level == ret.size()) ret.push_back(vector<int>());
-        if (L2R) ret[level].push_back(node->val);
-        else ret[level].insert(ret[level].begin(), node->val);
-        travel(node->left, level+1, !L2R);
-        travel(node->right, level+1, !L2R);
     }
 };
