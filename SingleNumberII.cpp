@@ -1,14 +1,14 @@
 class Solution {
 public:
     int singleNumber(vector<int>& nums) {
-        int ret = 0, mask = 1;
-        for (int i=0; i<32; i++) {
-            int sum = 0;
-            for (int n : nums)
-                if (n & mask) sum++;
-            ret |= sum%3 << i;
-            mask <<= 1;
+        // x[i] indicates bits appear i times 
+        int x0 = ~0, x1 = 0, x2 = 0;
+        for (int n : nums) {
+            int tmp = x2;
+            x2 = x1 & n | x2 & ~n;
+            x1 = x0 & n | x1 & ~n;
+            x0 = tmp & n | x0 & ~n;
         }
-        return ret;
+        return x1;
     }
 };
