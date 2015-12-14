@@ -1,13 +1,13 @@
 class Solution {
 public:
     int singleNumber(vector<int>& nums) {
-        int bits[32];
-        memset(bits, 0, sizeof(int)*32);
-        int ret = 0;
-        for (int i=0; i<32; ++i) {
-            for (int n : nums) 
-                if (n>>i & 1) bits[i]++;
-            ret |= bits[i]%3 << i;
+        int ret = 0, mask = 1;
+        for (int i=0; i<32; i++) {
+            int sum = 0;
+            for (int n : nums)
+                if (n & mask) sum++;
+            ret |= sum%3 << i;
+            mask <<= 1;
         }
         return ret;
     }
