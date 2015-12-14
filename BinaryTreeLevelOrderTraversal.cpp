@@ -11,16 +11,28 @@ class Solution {
 public:
     vector<vector<int>> levelOrder(TreeNode* root) {
         vector<vector<int>> ret;
-        travel(root, 0, ret);
+        if (!root) return ret;
+        ret.push_back(vector<int>());
+        queue<TreeNode*> q;
+        q.push(root);
+        // use NULL to separate each level
+        q.push(NULL);
+        
+        while (!q.empty()) {
+            TreeNode *p = q.front();
+            q.pop();
+            if (!p) {
+                if (!q.empty()) {
+                    ret.push_back(vector<int>());
+                    q.push(NULL);
+                }
+                continue;
+            }
+            ret.back().push_back(p->val);
+            if (p->left) q.push(p->left);
+            if (p->right) q.push(p->right);
+        }
+        
         return ret;
-    }
-    
-private:
-    void travel(TreeNode *node, int level, vector<vector<int>> &v) {
-        if (!node) return;
-        if (level >= v.size()) v.push_back(vector<int>());
-        v[level].push_back(node->val);
-        travel(node->left, level+1, v);
-        travel(node->right, level+1, v);
     }
 };
