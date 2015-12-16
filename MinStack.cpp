@@ -1,27 +1,33 @@
 class MinStack {
 public:
     void push(int x) {
-        main_stack.push(x);
-        if (min_stack.empty() || x <= min_stack.top())
-            min_stack.push(x);
+        if (s.empty()) {
+            s.push(0);
+            min = x;
+        }
+        else {
+            s.push(x-min);
+            if (x < min) min = x;
+        }
     }
 
     void pop() {
-        int ret = main_stack.top();
-        main_stack.pop();
-        if (ret == min_stack.top())
-            min_stack.pop();
+        if (s.top() < 0) min -= s.top();
+        s.pop();
     }
 
     int top() {
-        return main_stack.top();
+        if (s.top() < 0) return min;
+        return (int)(min + s.top());
     }
 
     int getMin() {
-        return min_stack.top();
+        return (int)min;
     }
     
 private:
-    stack<int> main_stack;
-    stack<int> min_stack;
+    // the difference with current min
+    // use long since the difference may overflow the int range
+    stack<long> s;
+    long min;
 };
