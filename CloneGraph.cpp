@@ -9,22 +9,24 @@
 class Solution {
 public:
     UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
-        // old node ptr -> new node ptr
-        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> m;
-        return clone(node, m);
-    }
-    
-private:
-    UndirectedGraphNode *clone(UndirectedGraphNode *node, unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> &m) {
         if (!node) return NULL;
-        if (m.find(node) != m.end())
-            return m[node];
-        UndirectedGraphNode *newnode = new UndirectedGraphNode(node->label);
-        m[node] = newnode;
-        for (UndirectedGraphNode *neighbor : node->neighbors) {
-            UndirectedGraphNode *new_neighbor = clone(neighbor, m);
-            newnode->neighbors.push_back(new_neighbor);
+        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> m;
+        queue<UndirectedGraphNode*> q;
+        q.push(node);
+        UndirectedGraphNode *new_node = new UndirectedGraphNode(node->label);
+        m[node] = new_node;
+        
+        while (!q.empty()) {
+            UndirectedGraphNode *cur = q.front();
+            q.pop();
+            for (UndirectedGraphNode *neighbor : cur->neighbors) {
+                if (m.find(neighbor) == m.end()) {
+                    m[neighbor] = new UndirectedGraphNode(neighbor->label);
+                    q.push(neighbor);
+                }
+                m[cur]->neighbors.push_back(m[neighbor]);
+            }
         }
-        return newnode;
+        return new_node;
     }
 };
