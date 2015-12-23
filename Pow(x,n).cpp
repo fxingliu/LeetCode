@@ -1,16 +1,19 @@
 class Solution {
 public:
     double myPow(double x, int n) {
-        if (n < 0) return 1./pow(x, -n);
-        return pow(x, n);
-    }
-    
-private:
-    // x^n = x^(n/2) * x^(n/2) * x^(n%2)
-    double pow(double x, int n) {
-        if (n == 0) return 1;
-        double p = pow(x, n/2);
-        if (n%2) return p*p*x;
-        return p*p;
+        double ans = 1;
+        // avoid overflow
+        unsigned long long p;
+        if (n < 0) {
+            x = 1/x;
+            p = -n;
+        }
+        else p = n;
+        while (p) {
+            if (p & 1) ans *= x;
+            x *= x;
+            p >>= 1;
+        }
+        return ans;
     }
 };
