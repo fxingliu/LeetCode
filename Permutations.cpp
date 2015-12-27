@@ -1,21 +1,25 @@
 class Solution {
 public:
     vector<vector<int>> permute(vector<int>& nums) {
-        vector<vector<int>> ret;
-        dfs(nums, 0, ret);
-        return ret;
+        return permuteStep(nums, nums.size());
     }
     
 private:
-    void dfs(vector<int>& nums, int pos, vector<vector<int>>& ret) {
-        if (pos == nums.size()) {
-            ret.push_back(nums);
-            return;
+    vector<vector<int>> permuteStep(vector<int>& nums, int step) {
+        vector<vector<int>> ret;
+        if (step == 0) {
+            ret.push_back(vector<int>());
+            return ret;
         }
-        for (int begin=pos; begin<nums.size(); ++begin) {
-            swap(nums[pos], nums[begin]);
-            dfs(nums, pos+1, ret);
-            swap(nums[pos], nums[begin]);
+        
+        vector<vector<int>> lastStep = permuteStep(nums, step-1);
+        for (vector<int>& last : lastStep) {
+            for (int i=0; i<=last.size(); ++i) {
+                last.insert(last.begin()+i, nums[step-1]);
+                ret.push_back(last);
+                last.erase(last.begin()+i);
+            }   
         }
+        return ret;
     }
 };
