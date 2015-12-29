@@ -1,18 +1,13 @@
 class Solution {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> ret;
-        // initialize n=0
-        ret.push_back(vector<int>());
         sort(nums.begin(), nums.end());
+        int retNum = pow(2, nums.size());
+        vector<vector<int>> ret(retNum, vector<int>());
         for (int i=0; i<nums.size(); ++i) {
-            int count = ret.size();
-            // for each previous subset, insert current number
-            for (int j=0; j<count; ++j) {
-                vector<int> copy(ret[j]);
-                copy.push_back(nums[i]);
-                ret.push_back(copy);
-            }
+            // each j represents one solution
+            for (int j=0; j<retNum; ++j) 
+                if ((j >> i) & 1) ret[j].push_back(nums[i]);
         }
         return ret;
     }
