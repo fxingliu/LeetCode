@@ -2,22 +2,22 @@ class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
         vector<vector<int>> ret;
-        vector<int> path;
+        ret.push_back(vector<int>());
         sort(nums.begin(), nums.end());
-        dfs(nums, -1, path, ret);
-        return ret;
-    }
-    
-private:
-    void dfs(vector<int>& nums, int begin, vector<int>& path, vector<vector<int>>& ret) {
-        ret.push_back(path);
-        for (int i=begin+1; i<nums.size(); i++) {
-            // avoid duplicate insertion
-            if (i==begin+1 || nums[i-1]!=nums[i]) {
-                path.push_back(nums[i]);
-                dfs(nums, i, path, ret);
-                path.pop_back();
+        int i = 0;
+        while (i < nums.size()) {
+            int same = 1;
+            while (i+same < nums.size() && nums[i] == nums[i+same]) same++;
+            int prevSize = ret.size();
+            for (int j=0; j<prevSize; ++j) {
+                vector<int> copy(ret[j]);
+                for (int k=0; k<same; ++k) {
+                    copy.push_back(nums[i]);
+                    ret.push_back(copy);
+                }
             }
+            i += same;
         }
+        return ret;
     }
 };
