@@ -9,17 +9,16 @@ public:
     }
     
 private:
-    void dfs(vector<vector<int>>& ret, vector<int>& path, int sum, int target, vector<int>& candidates) {
-        if (sum > target) return;
-        if (sum == target) {
+    void dfs(vector<vector<int>>& ret, vector<int>& path, int start, int target, vector<int>& candidates) {
+        if (target == 0) {
             ret.push_back(path);
             return;
         }
-        for (int i : candidates) {
-            // avoid duplicates
-            if (!path.empty() && i < path.back()) continue;
-            path.push_back(i);
-            dfs(ret, path, sum+i, target, candidates);
+        for (int i=start; i<candidates.size(); i++) {
+            // early prunning
+            if (candidates[i] > target) continue;
+            path.push_back(candidates[i]);
+            dfs(ret, path, i, target-candidates[i], candidates);
             path.pop_back();
         }
     }
