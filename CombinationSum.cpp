@@ -16,7 +16,7 @@ private:
         }
         for (int i=start; i<candidates.size(); i++) {
             // early prunning
-            if (candidates[i] > target) continue;
+            if (candidates[i] > target) break;
             path.push_back(candidates[i]);
             dfs(ret, path, i, target-candidates[i], candidates);
             path.pop_back();
