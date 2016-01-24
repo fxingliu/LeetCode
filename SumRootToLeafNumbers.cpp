@@ -10,17 +10,13 @@
 class Solution {
 public:
     int sumNumbers(TreeNode* root) {
-        int sum = 0;
-        dfs(sum, 0, root);
-        return sum;
+        return dfs(root, 0);
     }
     
 private:
-    void dfs(int& sum, int path, TreeNode* p) {
-        if (!p) return;
-        path = path * 10 + p->val;
-        if (!p->left && !p->right) sum += path;
-        dfs(sum, path, p->left);
-        dfs(sum, path, p->right);
+    int dfs(TreeNode* p, int sum) {
+        if (!p) return 0;
+        if (!p->left && !p->right) return sum*10+p->val;
+        return dfs(p->left, sum*10+p->val) + dfs(p->right, sum*10+p->val);
     }
 };
