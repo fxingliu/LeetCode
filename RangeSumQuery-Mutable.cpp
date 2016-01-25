@@ -1,58 +1,45 @@
 class NumArray {
 public:
     NumArray(vector<int> &nums) : n(nums.size()) {
-        if (n == 0) return;
-        int size = 1;
-        while (size < n) size*=2;
-        size = 2*size-1;
-        segmentTree.resize(size);
-        buildTree(0, nums, 0, n-1);
+        this->nums = nums;
+        // construct BIT
+        BIT = vector<int>(n+1, 0);
+        for (int i=0; i<n; i++) {
+            updateBIT(i, nums[i]);
+        }
     }
 
     void update(int i, int val) {
-        getUpdate(0, i, val, 0, n-1);
+        updateBIT(i, val - nums[i]);
+        nums[i] = val;
     }
 
     int sumRange(int i, int j) {
-        return getSum(0, i, j, 0, n-1);
+        return getSum(j) - getSum(i-1);
     }
     
 private:
-    vector<int> segmentTree;
+    vector<int> nums;
+    vector<int> BIT;
     const int n;
     
-    int buildTree(int pos, vector<int>& nums, int begin, int end) {
-        if (begin == end) {
-            segmentTree[pos] = nums[begin]; 
-            return segmentTree[pos];
+    void updateBIT(int i, int diff) {
+        // the index of BIT is i+1
+        i++;
+        while (i <= n) {
+            BIT[i] += diff;
+            i += i & (-i);
         }
-        // avoid overflow
-        int mid = begin + (end - begin) / 2;
-        // recursively build left and right subtree 
-        segmentTree[pos] = buildTree(2*pos+1, nums, begin, mid) + buildTree(2*pos+2, nums, mid+1, end);
-        return segmentTree[pos];
     }
     
-    int getUpdate(int pos, int i, int val, int begin, int end) {
-        if (i < begin || end < i) return 0;
-        int diff;
-        // found i
-        if (begin == end) {
-            diff = val - segmentTree[pos];
-            segmentTree[pos] = val;
-            return diff;
-        }
-        int mid = begin + (end - begin) / 2;
-        diff = (mid < i) ? getUpdate(2*pos+2, i, val, mid+1, end) : getUpdate(2*pos+1, i, val, begin, mid);
-        segmentTree[pos] += diff;
-        return diff;
-    }
-    
-    int getSum(int pos, int i, int j, int begin, int end) {
-        if (i <= begin && end <= j) return segmentTree[pos];
-        if (end < i || j < begin) return 0;
-        int mid = begin + (end - begin) / 2;
-        return getSum(2*pos+1, i, j, begin, mid) + getSum(2*pos+2, i, j, mid+1, end);
+    int getSum(int i) {
+        i++;
+        int sum = 0;
+        while (i > 0) {
+            sum += BIT[i];
+            i -= i & (-i);
+        } 
+        return sum;
     }
 };
 
