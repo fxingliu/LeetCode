@@ -1,23 +1,29 @@
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int sum = nums1.size() + nums2.size();
-        // median is one number
-        if (sum & 1) return findKth(nums1, nums2, 0, 0, sum/2);
-        else return (findKth(nums1, nums2, 0, 0, sum/2-1) + findKth(nums1, nums2, 0, 0, sum/2)) / 2.0;
-    }
-    
-private:
-    int findKth(vector<int>& a, vector<int>& b, int ia, int ib, int k) {
         // ensure m <= n
-        if (a.size()-ia > b.size()-ib) return findKth(b, a, ib, ia, k);
-        if (a.size() == ia) return b[ib+k];
-        if (k == 0) return min(a[ia], b[ib]);
-        int i = min((k-1)/2, (int)a.size()-1-ia);
-        int j = k-i-1;
-        // throw away the smaller part
-        if (a[ia+i] < b[ib+j]) return findKth(a, b, ia+i+1, ib, k-i-1);
-        else if (a[ia+i] > b[ib+j]) return findKth(a, b, ia, ib+j+1, k-j-1);
-        else return a[ia+i];
+        if (nums1.size() > nums2.size()) return findMedianSortedArrays(nums2, nums1);
+        const int m = nums1.size(), n = nums2.size();
+        int imin = 0, imax = m, half = (m+n+1)/2, med1, med2, i, j;
+        
+        while (imin <= imax) {
+            i = (imin+imax)/2;
+            j = half-i;
+            if (i>0 && j<n && nums2[j]<nums1[i-1]) imax = i-1;
+            else if (i<m && j>0 && nums1[i]<nums2[j-1]) imin = i+1;
+            else {
+                if (i == 0) med1 = nums2[j-1];
+                else if (j == 0) med1 = nums1[i-1];
+                else med1 = max(nums1[i-1], nums2[j-1]);
+                break;
+            }
+        }
+        
+        if ((m+n) & 1) // sum is odd, only one median
+            return med1;
+        if (i == m) med2 = nums2[j];
+        else if (j == n) med2 = nums1[i];
+        else med2 = min(nums1[i], nums2[j]);
+        return (med1 + med2) / 2.0;
     }
 };
