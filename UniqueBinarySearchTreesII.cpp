@@ -10,31 +10,30 @@
 class Solution {
 public:
     vector<TreeNode*> generateTrees(int n) {
-        vector<vector<TreeNode*>> f(n+1, vector<TreeNode*>());
-        if (n == 0) return f[0];
-        f[0].push_back(NULL);
-        
-        // f[0, i] = comb(f[0, j-1] + j + f[j+1, i])
-        for (int i=1; i<=n; ++i) 
-            for (int j=1; j<=i; ++j) 
-                for (TreeNode* l : f[j-1])
-                    for (TreeNode* r : f[i-j]) {
-                        TreeNode* cur = new TreeNode(j);
-                        cur->left = l;
-                        cur->right = clone(r, j);
-                        f[i].push_back(cur);
-                    }
-        
-        return f[n];
+        if (n == 0) return vector<TreeNode*>();
+        return generate(1, n);
     }
     
 private:
-    // copy the structure while adding offset to value
-    TreeNode* clone(TreeNode* ori, int offset) {
-        if (!ori) return NULL;
-        TreeNode* cur = new TreeNode(ori->val + offset);
-        cur->left = clone(ori->left, offset);
-        cur->right = clone(ori->right, offset);
-        return cur;
+    vector<TreeNode*> generate(int begin, int end) {
+        vector<TreeNode*> ret;
+        if (begin > end) {
+            ret.push_back(NULL);
+            return ret;
+        }
+        
+        for (int i=begin; i<=end; ++i) {
+            vector<TreeNode*> L = generate(begin, i-1);
+            vector<TreeNode*> R = generate(i+1, end);
+            for (TreeNode* l : L)
+                for (TreeNode* r : R) {
+                    TreeNode* cur = new TreeNode(i);
+                    cur->left = l;
+                    cur->right = r;
+                    ret.push_back(cur);
+                }
+        }
+        
+        return ret;
     }
 };
