@@ -1,14 +1,16 @@
 class Solution {
 public:
     void sortColors(vector<int>& nums) {
-        int low = 0, high = nums.size()-1;
-        for (int i=0; i<=high; ) {
-            if (nums[i] == 0) 
-                swap(nums[low++], nums[i++]);
-            else if (nums[i] == 2)
-                swap(nums[high--], nums[i]);
-            else
-                i++;
-        }
+        int last0 = partition(nums, 0, 0);
+        partition(nums, last0, 1);
+    }
+    
+private:
+    int partition(vector<int>& nums, int begin, int key) {
+        if (begin >= nums.size()) return nums.size();
+        int pos = begin;
+        for (; begin < nums.size(); begin++)
+            if (nums[begin] == key) swap(nums[begin], nums[pos++]);
+        return pos;
     }
 };
