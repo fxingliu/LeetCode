@@ -11,19 +11,16 @@ public:
     ListNode* removeNthFromEnd(ListNode* head, int n) {
         ListNode dummy(0);
         dummy.next = head;
-        getNFromEnd(&dummy, n);
-        return dummy.next;
-    }
-    
-private:
-    int getNFromEnd(ListNode* p, int n) {
-        if (!p) return -1;
-        int ret = getNFromEnd(p->next, n)+1;
-        if (ret == n) {
-            ListNode *tmp = p->next;
-            p->next = tmp->next;
-            delete tmp;
+        ListNode *p = &dummy, *q = &dummy;
+        for (int i=0; i<n; ++i) 
+            p = p->next;
+        while (p->next) {
+            p = p->next;
+            q = q->next;
         }
-        return ret;
+        p = q->next;
+        q->next = p->next;
+        delete p;
+        return dummy.next;
     }
 };
