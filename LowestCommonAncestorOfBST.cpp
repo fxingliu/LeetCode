@@ -10,9 +10,13 @@
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        // whether belong to the same subtree
-        if ((root->val - p->val) * (root->val - q->val) > 0)
-            return (root->val < p->val) ? lowestCommonAncestor(root->right, p, q) : lowestCommonAncestor(root->left, p, q);
-        return root;
+        while (root) {
+            if (p->val < root->val && q->val < root->val)
+                root = root->left;
+            else if (p->val > root->val && q->val > root->val)
+                root = root->right;
+            else return root;
+        }
+        return NULL;
     }
 };
