@@ -9,15 +9,11 @@
 class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
-        ListNode *p = head, *q = head;
-        while (p) {
-            q = p->next;
-            while (q && q->val == p->val) {
-                p->next = q->next;
-                delete q;
-                q = p->next;
-            }
-            p = q;
+        if (!head || !head->next) return head;
+        head->next = deleteDuplicates(head->next);
+        if (head->val == head->next->val) {
+            delete head;
+            return head->next;
         }
         return head;
     }
