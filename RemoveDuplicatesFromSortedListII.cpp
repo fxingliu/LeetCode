@@ -9,28 +9,18 @@
 class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
-        ListNode dummy(0);
-        dummy.next = head;
-        ListNode *p = &dummy, *q = head;
-        while (q) {
-            while (q->next && q->next->val == q->val) 
-                q = q->next;
-            if (p->next == q) {
-                p = q;
-                q = q->next;
+        if (!head) return NULL;
+        if (head->next && head->next->val == head->val) {
+            while (head->next && head->next->val == head->val) {
+                ListNode *tmp = head;
+                head = head->next;
+                delete tmp;
             }
-            else {
-                ListNode *tmp = p->next;
-                p->next = q->next;
-                // release memory
-                while (tmp != p->next) {
-                    q = tmp->next;
-                    delete tmp;
-                    tmp = q;
-                }
-                q = tmp;
-            }
+            ListNode* newHead = head->next;
+            delete head;
+            return deleteDuplicates(newHead);
         }
-        return dummy.next;
+        head->next = deleteDuplicates(head->next);
+        return head;
     }
 };
