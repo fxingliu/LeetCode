@@ -3,16 +3,21 @@ public:
     int trap(vector<int>& height) {
         const int n = height.size();
         if (n < 3) return 0;
-        vector<int> leftMax(n, height.front()), rightMax(n, height.back());
+        int maxIdx = 0;
         for (int i=1; i<n; i++)
-            leftMax[i] = max(leftMax[i-1], height[i]);
-        for (int i=n-2; i>=0; i--)
-            rightMax[i] = max(rightMax[i+1], height[i]);
-        int area = 0;
-        for (int i=0; i<n; i++) {
-            int side = min(leftMax[i], rightMax[i]);
-            if (side > height[i]) area += side-height[i];
+            if (height[i] > height[maxIdx]) maxIdx = i;
+            
+        int peak = 0, area = 0;
+        for (int i=0; i<maxIdx; i++) {
+            if (height[i] > peak) peak = height[i];
+            else area += peak-height[i];
         }
+        peak = 0;
+        for (int i=n-1; i>maxIdx; i--) {
+            if (height[i] > peak) peak = height[i];
+            else area += peak-height[i];
+        }
+        
         return area;
     }
 };
