@@ -1,23 +1,19 @@
 class Solution {
 public:
     int trap(vector<int>& height) {
-        const int n = height.size();
-        if (n < 3) return 0;
-        int maxIdx = 0;
-        for (int i=1; i<n; i++)
-            if (height[i] > height[maxIdx]) maxIdx = i;
-            
-        int peak = 0, area = 0;
-        for (int i=0; i<maxIdx; i++) {
-            if (height[i] > peak) peak = height[i];
-            else area += peak-height[i];
+        int left = 0, right = height.size()-1, lMax = 0, rMax = 0, area = 0;
+        while (left <= right) {
+            if (height[left] < height[right]) {
+                if (height[left] > lMax) lMax = height[left];
+                else area += lMax-height[left];
+                left++;
+            }
+            else {
+                if (height[right] > rMax) rMax = height[right];
+                else area += rMax-height[right];
+                right--;
+            }
         }
-        peak = 0;
-        for (int i=n-1; i>maxIdx; i--) {
-            if (height[i] > peak) peak = height[i];
-            else area += peak-height[i];
-        }
-        
         return area;
     }
 };
