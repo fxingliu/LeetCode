@@ -3,26 +3,30 @@ public:
     int minCostII(vector<vector<int>>& costs) {
         if (costs.empty()) return 0;
         const int m = costs.size(), n = costs[0].size();
-        vector<int> last(n), min_last(n);
+        vector<int> last(n);
+        // min1 is the smallest of last sum; min2 is the second to smallest
+        int min1, min2;
         
         for (int i=0; i<m; i++) {
-            for (int j=0; j<n; j++)
-                last[j] = min_last[j] + costs[i][j];
-            // update min_last in two-pass traversal
-            if (i == m-1) break;
-            min_last[0] = INT_MAX;
-            for (int j=1; j<n; j++)
-                min_last[j] = min(min_last[j-1], last[j-1]);
-            int tmp = last.back();
-            for (int j=n-2; j>=0; j--) {
-                tmp = min(tmp, last[j+1]);
-                min_last[j] = min(min_last[j], tmp);
+            int min1_old = i==0 ? 0 : min1;
+            int min2_old = i==0 ? 0 : min2;
+            min1 = min2 = INT_MAX;
+            for (int j=0; j<n; j++) {
+                if (last[j] == min1_old) 
+                    last[j] = min2_old + costs[i][j];
+                else
+                    last[j] = min1_old + costs[i][j];
+                    
+                // update min1, min2 for every [i][j]
+                if (last[j] >= min1)
+                    min2 = min(min2, last[j]);
+                else {
+                    min2 = min1;
+                    min1 = last[j];
+                }
             } 
         }
         
-        int ret = last[0];
-        for (int j=1; j<n; j++)
-            ret = min(ret, last[j]);
-        return ret;
+        return min1;
     }
 };
