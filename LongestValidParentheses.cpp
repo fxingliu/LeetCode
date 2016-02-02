@@ -2,24 +2,16 @@ class Solution {
 public:
     int longestValidParentheses(string s) {
         const int n = s.size();
-        if (n == 0) return 0;
+        if (n < 2) return 0;
+        vector<int> dp(n);
+        int longest = 0;
         
-        stack<int> _stack;
-        for (int i=0; i<n; i++) {
-            if (s[i] == ')' && !_stack.empty() && s[_stack.top()] == '(') _stack.pop();
-            else _stack.push(i);
-        }
-        
-        if (_stack.empty()) return n;
-        
-        int start = 0, end = n, longest = 0;
-        while (!_stack.empty()) {
-            start = _stack.top();
-            _stack.pop();
-            longest = max(longest, end-start-1);
-            end = start;
-        }
-        longest = max(longest, end);
+        // dp[0] must be 0
+        for (int i=1; i<n; i++) 
+            if (s[i] == ')' && i-dp[i-1]-1 >= 0 && s[i-dp[i-1]-1] == '(') {
+                dp[i] = dp[i-1] + 2 + ((i-dp[i-1]-2 >= 0) ? dp[i-dp[i-1]-2] : 0);
+                longest = max(longest, dp[i]);
+            }
         return longest;
     }
 };
