@@ -10,17 +10,10 @@
 class Solution {
 public:
     TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
-        stack<TreeNode*> _stack;
-        while (root) {
-            _stack.push(root);
-            if (p->val < root->val) root = root->left;
-            else root = root->right;
-        }
-        while (!_stack.empty()) {
-            root = _stack.top();
-            _stack.pop();
-            if (root->val > p->val) return root;
-        }
-        return NULL;
+        if (!root) return NULL;
+        if (root->val <= p->val) 
+            return inorderSuccessor(root->right, p);
+        TreeNode *left = inorderSuccessor(root->left, p);
+        return left ? left : root;
     }
 };
