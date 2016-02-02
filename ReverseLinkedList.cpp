@@ -9,22 +9,13 @@
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
-        if (!head) return NULL;
-        
-        stack<ListNode*> _stack;
+        ListNode *prev = NULL, *tmp;
         while (head) {
-            _stack.push(head);
-            head = head->next;
+            tmp = head->next;
+            head->next = prev;
+            prev = head;
+            head = tmp;
         }
-        
-        ListNode dummy(0);
-        ListNode *tail = &dummy;
-        while (!_stack.empty()) {
-            tail->next = _stack.top();
-            _stack.pop();
-            tail = tail->next;
-        }
-        tail->next = NULL;
-        return dummy.next;
+        return prev;
     }
 };
