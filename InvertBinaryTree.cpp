@@ -10,18 +10,10 @@
 class Solution {
 public:
     TreeNode* invertTree(TreeNode* root) {
-        invertNode(root);
+        if (!root) return NULL;
+        TreeNode *newRight = invertTree(root->left);
+        root->left = invertTree(root->right);
+        root->right = newRight;
         return root;
-    }
-    
-private:
-    void invertNode(TreeNode *p) {
-        if (!p) return;
-        TreeNode *tmp = p->left;
-        p->left = p->right;
-        p->right = tmp;
-        
-        invertNode(p->left);
-        invertNode(p->right);
     }
 };
