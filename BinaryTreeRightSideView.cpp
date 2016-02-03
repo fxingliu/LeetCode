@@ -11,22 +11,15 @@ class Solution {
 public:
     vector<int> rightSideView(TreeNode* root) {
         vector<int> ret;
-        if (!root) return ret;
-        
-        deque<TreeNode*> q;
-        q.push_back(root);
-        TreeNode *rightmost = root;
-        while (!q.empty()) {
-            root = q.front();
-            q.pop_front();
-            if (root->left) q.push_back(root->left);
-            if (root->right) q.push_back(root->right);
-            if (root == rightmost) {
-                ret.push_back(root->val);
-                if (!q.empty()) rightmost = q.back();
-            }
-        }
-        
+        view(root, 0, ret);
         return ret;
+    }
+    
+private:
+    void view(TreeNode *p, int layer, vector<int>& ret) {
+        if (!p) return;
+        if (layer == ret.size()) ret.push_back(p->val);
+        view(p->right, layer+1, ret);
+        view(p->left, layer+1, ret);
     }
 };
