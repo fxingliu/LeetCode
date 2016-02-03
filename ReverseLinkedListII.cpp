@@ -9,24 +9,18 @@
 class Solution {
 public:
     ListNode* reverseBetween(ListNode* head, int m, int n) {
-        int count = 1;
         ListNode dummy(0);
         dummy.next = head;
-        ListNode *cur = head, *start = &dummy, *prev = NULL;
-        while (count < m) {
-            start = cur;
-            cur = cur->next;
-            count++;
-        }
-        while (count <= n) {
+        ListNode *pre = &dummy;
+        for (int i=0; i<m-1; i++)
+            pre = pre->next;
+        ListNode *cur = pre->next;
+        for (int i=0; i<n-m; i++) {
             ListNode *tmp = cur->next;
-            cur->next = prev;
-            prev = cur;
-            cur = tmp;
-            count++;
+            cur->next = tmp->next;
+            tmp->next = pre->next;
+            pre->next = tmp;
         }
-        start->next->next = cur;
-        start->next = prev;
         return dummy.next;
     }
 };
