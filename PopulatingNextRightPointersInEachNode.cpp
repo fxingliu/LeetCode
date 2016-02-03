@@ -10,15 +10,15 @@ class Solution {
 public:
     void connect(TreeLinkNode *root) {
         if (!root) return;
-        connectNodes(root->left, root->right);
-    }
-    
-private:
-    void connectNodes(TreeLinkNode *p, TreeLinkNode *q) {
-        if (!p) return;
-        p->next = q;
-        connectNodes(p->left, p->right);
-        connectNodes(q->left, q->right);
-        connectNodes(p->right, q->left);
+        TreeLinkNode *prev = root, *cur = NULL;
+        while (prev->left) {
+            cur = prev;
+            while (cur) {
+                cur->left->next = cur->right;
+                if (cur->next) cur->right->next = cur->next->left;
+                cur = cur->next;
+            }
+            prev = prev->left;
+        }
     }
 };
