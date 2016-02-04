@@ -1,19 +1,30 @@
 class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {
-        quickSort(nums, 0, nums.size()-1);
-        return nums[nums.size()-k];
+        buildHeap(nums);
+        for (int i=0; i<k-1; i++) {
+            swap(nums[0], nums[--heapSize]);
+            maxHeapify(nums, 0);
+        }
+        return nums[0];
     }
     
 private:
-    int quickSort(vector<int>& nums, int left, int right) {
-        int pivot = nums[(left+right)/2], L = left, R = right;
-        while (L <= R) {
-            while (nums[L] < pivot) L++;
-            while (nums[R] > pivot) R--;
-            if (L <= R) swap(nums[L++], nums[R--]);
+    int heapSize;
+    
+    void maxHeapify(vector<int>& nums, int idx) {
+        int l = 2*idx+1, r = 2*idx+2, maxIdx = idx;
+        if (l < heapSize && nums[l] > nums[maxIdx]) maxIdx = l;
+        if (r < heapSize && nums[r] > nums[maxIdx]) maxIdx = r;
+        if (maxIdx != idx) {
+            swap(nums[maxIdx], nums[idx]);
+            maxHeapify(nums, maxIdx);
         }
-        if (L < right) quickSort(nums, L, right);
-        if (R > left) quickSort(nums, left, R);
+    }
+    
+    void buildHeap(vector<int>& nums) {
+        heapSize = nums.size();
+        for (int i=heapSize/2-1; i>=0; i--)
+            maxHeapify(nums, i);
     }
 };
