@@ -1,30 +1,18 @@
 class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {
-        buildHeap(nums);
-        for (int i=0; i<k-1; i++) {
-            swap(nums[0], nums[--heapSize]);
-            maxHeapify(nums, 0);
+        priority_queue<int, vector<int>, compare> pq;
+        for (int i=0; i<nums.size(); i++) {
+            pq.push(nums[i]);
+            if (i >= k) pq.pop();
         }
-        return nums[0];
+        return pq.top();
     }
     
 private:
-    int heapSize;
-    
-    void maxHeapify(vector<int>& nums, int idx) {
-        int l = 2*idx+1, r = 2*idx+2, maxIdx = idx;
-        if (l < heapSize && nums[l] > nums[maxIdx]) maxIdx = l;
-        if (r < heapSize && nums[r] > nums[maxIdx]) maxIdx = r;
-        if (maxIdx != idx) {
-            swap(nums[maxIdx], nums[idx]);
-            maxHeapify(nums, maxIdx);
+    struct compare {
+        bool operator()(const int a, const int b) const {
+            return a > b;
         }
-    }
-    
-    void buildHeap(vector<int>& nums) {
-        heapSize = nums.size();
-        for (int i=heapSize/2-1; i>=0; i--)
-            maxHeapify(nums, i);
-    }
+    };
 };
