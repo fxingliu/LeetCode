@@ -1,17 +1,14 @@
 class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
-        unordered_map<int, int> m;
+        unordered_set<int> s(nums.begin(), nums.end());
         int lcs = 0;
-        for (int i : nums) {
-            if (m.find(i) != m.end()) continue;
-            int left = (m.find(i-1) != m.end()) ? m[i-1] : 0;
-            int right = (m.find(i+1) != m.end()) ? m[i+1] : 0;
-            int sum = left + 1 + right;
-            lcs = max(lcs, sum);
-            m[i] = sum;
-            m[i-left] = sum;
-            m[i+right] = sum;
+        for (int start : nums) {
+            // make sure every element is visited only once
+            if (s.find(start-1) != s.end()) continue;
+            int end = start+1;
+            while (s.find(end) != s.end()) end++;
+            lcs = max(lcs, end-start);
         }
         return lcs;
     }
