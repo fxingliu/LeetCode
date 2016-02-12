@@ -1,17 +1,39 @@
 class Solution {
 public:
     int nthSuperUglyNumber(int n, vector<int>& primes) {
-        int k = primes.size();
-        vector<int> ptr(k);
         vector<int> dp{1};
+        priority_queue<node*, vector<node*>, compare> pq;
+        for (int i=0; i<primes.size(); i++)
+            pq.push(new node(primes[i], 0, primes[i]));
         while (dp.size() < n) {
-            int min_next = INT_MAX;
-            for (int i=0; i<k; i++)
-                min_next = min(min_next, dp[ptr[i]]*primes[i]);
-            dp.push_back(min_next);
-            for (int i=0; i<k; i++)
-                if (min_next == dp[ptr[i]]*primes[i]) ptr[i]++;
+            int cur = pq.top()->val;
+            dp.push_back(cur);
+            while (pq.top()->val == cur) {
+                node *tmp = pq.top();
+                pq.pop();
+                tmp->val = dp[++tmp->idx] * tmp->prime;
+                pq.push(tmp);
+            }
         }
         return dp.back();
     }
+    
+private:
+    struct node {
+        int val;
+        int idx;
+        int prime;
+        
+        node(int v, int i, int p) {
+            val = v;
+            idx = i;
+            prime = p;
+        }
+    };
+    
+    struct compare{
+        bool operator()(node* a, node* b) const {
+            return a->val > b->val;
+        }
+    };
 };
