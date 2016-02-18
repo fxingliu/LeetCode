@@ -17,12 +17,18 @@ public:
             prev = slow;
             slow = tmp;
         }
+        
+        ListNode* following = slow;
         if (fast) slow = slow->next;
-        // the first half is reversed and leading by prev 
+        // the first half is reversed and leading by prev
+        // we can actually restore the first half while checking palindrome
         while (slow) {
             if (slow->val != prev->val) return false;
             slow = slow->next;
-            prev = prev->next;
+            ListNode *tmp = prev->next;
+            prev->next = following;
+            following = prev;
+            prev = tmp;
         }
         return true;
     }
