@@ -9,27 +9,21 @@
 class Solution {
 public:
     bool isPalindrome(ListNode* head) {
-        if (!head) return true;
-        int len = 0;
-        for (ListNode* tmp = head; tmp; tmp = tmp->next) len++;
-        return helper(head, head, len, 0);
-    }
-    
-private:
-    bool helper(ListNode* head, ListNode*& mirror, int len, int step) {
-        step++;
-        if (step == (len+1)/2) {
-            if (len%2) {
-                mirror = head->next;
-                return true;
-            }
-            else {
-                mirror = head->next->next;
-                return head->val == head->next->val;
-            }
+        ListNode *fast = head, *slow = head, *prev = NULL;
+        while (fast && fast->next) {
+            fast = fast->next->next;
+            ListNode* tmp = slow->next;
+            slow->next = prev;
+            prev = slow;
+            slow = tmp;
         }
-        bool ret = helper(head->next, mirror, len, step) && head->val == mirror->val;
-        mirror = mirror->next;
-        return ret;
+        if (fast) slow = slow->next;
+        // the first half is reversed and leading by prev 
+        while (slow) {
+            if (slow->val != prev->val) return false;
+            slow = slow->next;
+            prev = prev->next;
+        }
+        return true;
     }
 };
