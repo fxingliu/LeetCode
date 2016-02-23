@@ -9,22 +9,14 @@
 class Solution {
 public:
     ListNode* oddEvenList(ListNode* head) {
-        if (!head || !head->next || !head->next->next) return head;
-        ListNode *odd = head, *even = head->next, *cur = head->next->next;
-        ListNode *evenHead = even;
-        int count = 2;
-        while (cur) {
-            if (++count % 2) {
-                odd->next = cur;
-                odd = cur;
-            } 
-            else {
-                even->next = cur;
-                even = cur;
-            }
-            cur = cur->next;
+        if (!head) return NULL;
+        ListNode *odd = head, *even = head->next, *evenHead = head->next;
+        while (even && even->next) {
+            odd->next = odd->next->next;
+            even->next = even->next->next;
+            odd = odd->next;
+            even = even->next;
         }
-        even->next = NULL;
         odd->next = evenHead;
         return head;
     }
