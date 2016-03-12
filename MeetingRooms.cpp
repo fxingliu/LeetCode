@@ -10,15 +10,19 @@
 class Solution {
 public:
     bool canAttendMeetings(vector<Interval>& intervals) {
-        // sort by start
-        sort(intervals.begin(), intervals.end(), compareIntervals);
-        for (int i=1; i<intervals.size(); i++)
-            if (intervals[i].start < intervals[i-1].end) return false;
+        try {
+            sort(intervals.begin(), intervals.end(), compareIntervals);
+        }
+        catch (exception& e) {
+            return false;
+        }
         return true;
     }
     
 private:
     static bool compareIntervals(Interval a, Interval b) {
-        return a.start < b.start;
+        if (a.start < b.start && a.end <= b.start) return true;
+        if (a.start > b.start && a.start >= b.end) return false;
+        throw exception();
     }
 };
