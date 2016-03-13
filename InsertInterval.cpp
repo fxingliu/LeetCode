@@ -10,17 +10,40 @@
 class Solution {
 public:
     vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
-        vector<Interval> left, right;
-        for (int i=0; i<intervals.size(); i++) {
-            if (intervals[i].end < newInterval.start) left.push_back(intervals[i]);
-            if (intervals[i].start > newInterval.end) right.push_back(intervals[i]);
+        const int n = intervals.size();
+        if (n == 0) return vector<Interval>{newInterval};
+        int left = binarySearchLeft(intervals, newInterval, 0, n-1);
+        int right = binarySearchRight(intervals, newInterval, 0, n-1);
+        if (right-left > 1) {
+            // overlap exists from [left+1] to [right-1]
+            newInterval.start = min(newInterval.start, intervals[left+1].start);
+            newInterval.end = max(newInterval.end, intervals[right-1].end);
+            intervals.erase(intervals.begin()+left+1, intervals.begin()+right);
         }
-        if (left.size() + right.size() != intervals.size()) {
-            newInterval.start = min(newInterval.start, intervals[left.size()].start);
-            newInterval.end = max(newInterval.end, intervals[intervals.size()-1-right.size()].end);
+        intervals.insert(intervals.begin()+left+1, newInterval);
+        return intervals;
+    }
+    
+private:
+    // search for intervals strictly left of newInterval
+    int binarySearchLeft(vector<Interval>& intervals, Interval newInterval, int left, int right) {
+        int L = left, R = right, M;
+        while (L < R) {
+            M = (L+R)/2;
+            if (intervals[M].end < newInterval.start) L = M+1;
+            else R = M;
         }
-        left.push_back(newInterval);
-        left.insert(left.end(), right.begin(), right.end());
-        return left;
+        return intervals[L].end >= newInterval.start ? L-1 : L;
+    }
+    
+    // search for intervals strictly right of newInterval
+    int binarySearchRight(vector<Interval>& intervals, Interval newInterval, int left, int right) {
+        int L = left, R = right, M;
+        while (L < R) {
+            M = (L+R)/2;
+            if (intervals[M].start > newInterval.end) R = M;
+            else L = M+1;
+        }
+        return intervals[L].start <= newInterval.end ? L+1 : L;
     }
 };
